@@ -1,0 +1,10 @@
+[package]
+name = "mpi"
+version = "0.1.0"
+authors = ["henry"]
+
+[lib]
+name = "mpi"
+
+[dependencies]
+libc = "*"
