@@ -38,7 +38,6 @@ pub type MPI_T_enum = *mut Struct_mca_base_var_enum_t;
 pub type MPI_T_pvar_handle = *mut Struct_mca_base_pvar_handle_t;
 pub type MPI_T_pvar_session = *mut Struct_mca_base_pvar_session_t;
 pub type MPI_Win = *mut Struct_ompi_win_t;
-pub type ompi_mpi_comm_world = Struct_ompi_communicator_t;
 
 pub const IMPI_CLIENT_COLOR: c_uint = 13;
 pub const IMPI_CLIENT_SIZE: c_uint = 12;
@@ -216,7 +215,10 @@ extern "C" {
     /* I know these are supposed to be the predefined types but,
      * using those types requires uncomfortable typecasts in rust.
      * The predefined types just have padding with the normal type.
+     * TODO: confirm this.
      */
+    pub static mut ompi_communicator_t: Struct_ompi_communicator_t;
+    pub static mut ompi_mpi_comm_world: Struct_ompi_communicator_t;
     pub static mut ompi_mpi_comm_self: Struct_ompi_communicator_t;
     pub static mut ompi_mpi_comm_null: Struct_ompi_communicator_t;
     pub static mut ompi_mpi_group_empty: Struct_ompi_group_t;
