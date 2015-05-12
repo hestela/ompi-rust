@@ -2,6 +2,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+pub mod consts;
+
 use libc::{ptrdiff_t, size_t, c_int, c_char};
 use libc::{c_longlong, c_void, c_uint, c_double};
 

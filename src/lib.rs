@@ -1,4 +1,3 @@
-// TODO: figure out how to repesent error conditions.
 extern crate libc;
 
 use std::env::Args;
@@ -7,6 +6,7 @@ use libc::{c_longlong, c_void, c_uint, c_double};
 
 pub mod bindings;
 pub mod comm;
+pub mod error;
 
 use bindings::*;
 
@@ -24,15 +24,7 @@ pub fn init_null() -> i32 {
   unsafe { MPI_Init(argc, argv) }
 }
 
-pub fn finalize() -> i32 {
-  unsafe { MPI_Finalize() }
-}
-
-/// Returns the rank of the process in the communicator.
-/// Doesnt "return" rank as a pointer link in C.
-// TODO: Handle errors, dont just throw the error away
-pub fn comm_rank(comm: MPI_Comm) -> i32 {
-  let mut rank = -1;
-  let _ = unsafe { MPI_Comm_rank(comm, &mut rank) };
-  rank
+/// Cleans up mpi stuff. Should always return success, no need for Error.
+pub fn finalize() -> () {
+  let _ = unsafe { MPI_Finalize() };
 }
