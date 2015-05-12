@@ -6,23 +6,9 @@ use libc::{ptrdiff_t, size_t, c_int, c_char};
 use libc::{c_longlong, c_void, c_uint, c_double};
 
 pub mod bindings;
+pub mod comm;
+
 use bindings::*;
-
-pub fn comm_new() -> MPI_Comm {
-  unsafe { &mut ompi_communicator_t }
-}
-
-pub fn comm_world() -> MPI_Comm {
-  unsafe { &mut ompi_mpi_comm_world }
-}
-
-pub fn comm_self() -> MPI_Comm {
-  unsafe { &mut ompi_mpi_comm_self }
-}
-
-pub fn comm_null() -> MPI_Comm {
-  unsafe { &mut ompi_mpi_comm_null }
-}
 
 /*
 pub fn init(argc: usize, argv: Vec<Args>) -> () {
