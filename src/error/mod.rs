@@ -1,5 +1,3 @@
-pub use bindings::*;
-
 pub struct Error {
   code: i32,
   string: &'static str
