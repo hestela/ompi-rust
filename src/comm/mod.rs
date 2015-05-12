@@ -19,7 +19,7 @@ pub fn null() -> MPI_Comm {
 }
 
 /// Gets the rank of the process in the communicator.
-/// Doesnt "return" rank as a pointer link in C.
+/// Doesn't "return" rank as a pointer like in C.
 /// Replacement for MPI_Comm_rank.
 pub fn rank(comm: MPI_Comm) -> Result<i32, Error> {
   let mut rank = -1;
