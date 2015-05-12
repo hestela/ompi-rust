@@ -1,6 +1,6 @@
 pub struct Error {
-  code: i32,
-  string: &'static str
+  pub code: i32,
+  pub string: &'static str
 }
 
 impl Error {
