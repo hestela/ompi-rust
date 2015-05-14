@@ -1,15 +1,20 @@
+//! Encapsulates an MPI erorr codes such as MPI_SUCCESS.  
+//! An Error should only be constructed when Err is returned.  
+//! When MPI_SUCCESS is recieved from an MPI_* fn, Ok should be returned.  
+//! If an MPI_* fn returns only MPI_SUCCESS then, `Result<T, Error>` is not needed.  
 pub struct Error {
   pub code: i32,
   pub string: &'static str
 }
 
 impl Error {
+  /// Creates new error container by converting error code into a string.
   pub fn new(err: i32) -> Error {
     Error { code: err, string: Error::error_to_string(err) }
   }
 
   // TODO: Finish for all errors.
-  pub fn error_to_string(err: i32) -> &'static str {
+  fn error_to_string(err: i32) -> &'static str {
     match err {
       MPI_SUCCESS => "SUCCESS",
       MPI_ERR_BUFFER => "ERR BUFFER",
@@ -20,6 +25,7 @@ impl Error {
   }
 }
 
+// Error codes
 pub const MPI_SUCCESS: i32 = 0;
 pub const MPI_ERR_BUFFER: i32 = 1;
 pub const MPI_ERR_COUNT: i32 = 2;

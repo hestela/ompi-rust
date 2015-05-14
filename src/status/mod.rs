@@ -3,6 +3,7 @@ use bindings::consts::UNDEFINED;
 
 pub const STATUS_IGNORE: Option<MPI_Status> = None;
 
+/// Creates new MPI_Status.
 pub fn new() -> MPI_Status {
   ompi_status_public_t {
     source: UNDEFINED,
