@@ -1,7 +1,6 @@
-/* The types and functions defined here are not meant to be used directly.
- * Instead, wrappers are provided in other mods.
- * Ex. prefer to use mpi::comm::rank() instead of unsafe{ MPI_Comm_Rank() }.
- */
+//! The types and functions defined here are not meant to be used directly.
+//! Instead, wrappers are provided in other mods.
+//! Ex. prefer to use `mpi::comm::rank()` instead of `unsafe { MPI_Comm_Rank() }`.
 // TODO: temp warning supression until I make these bindings more rusty.
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]

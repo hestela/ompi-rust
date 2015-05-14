@@ -1,3 +1,4 @@
+//! Constants provided by mpi.h that are not error related.
 // TODO: cleanup unused consts
 use libc::{ptrdiff_t, size_t, c_int, c_char};
 use libc::{c_longlong, c_void, c_uint, c_double};

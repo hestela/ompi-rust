@@ -7,7 +7,8 @@ pub fn new() -> MPI_Request {
   &mut ompi_request_t
 }
 
-/// Replacement for MPI_Request_get_status
+// TODO: Provide examples after Isend/Irecv implemented
+/// Replacement for MPI_Request_get_status.  
 /// Since success is always retured, an option containing the status is
 /// returned to avoid having to use int* flag to test success.
 pub fn get_status(req: MPI_Request) -> Option<MPI_Status> {
@@ -21,7 +22,7 @@ pub fn get_status(req: MPI_Request) -> Option<MPI_Status> {
 }
 
 // TODO: Test when MPI_STATUS_IGNORE comes from MPI_Wait
-/// Replacement for MPI_Wait
+/// Replacement for MPI_Wait.  
 /// Rerturns Ok(Option<MPI_Status) on MPI_SUCCESS, else Err.
 /// MPI_STATUS_IGNORED is encapsulated in the option as None.
 pub fn wait(mut req: MPI_Request) -> Result<Option<MPI_Status>, Error> {
