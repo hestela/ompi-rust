@@ -1,3 +1,7 @@
+/* The types and functions defined here are not meant to be used directly.
+ * Instead, wrappers are provided in other mods.
+ * Ex. prefer to use mpi::comm::rank() instead of unsafe{ MPI_Comm_Rank() }.
+ */
 // TODO: temp warning supression until I make these bindings more rusty.
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
@@ -42,13 +46,14 @@ pub struct ompi_win_t;
 // One of the few structs that we require access to its members.
 #[repr(C)]
 pub struct ompi_status_public_t {
-    pub MPI_SOURCE: c_int,
-    pub MPI_TAG: c_int,
-    pub MPI_ERROR: c_int,
-    pub _cancelled: c_int,
-    pub _ucount: size_t,
+    pub source: c_int,
+    pub tag: c_int,
+    pub err: c_int,
+    pub cancelled: c_int,
+    pub count: size_t,
 }
 
+// User level types
 pub type MPI_Aint = ptrdiff_t;
 pub type MPI_Comm = *mut ompi_communicator_t;
 pub type MPI_Count = c_longlong;
@@ -67,88 +72,6 @@ pub type MPI_T_enum = *mut mca_base_var_enum_t;
 pub type MPI_T_pvar_handle = *mut mca_base_pvar_handle_t;
 pub type MPI_T_pvar_session = *mut mca_base_pvar_session_t;
 pub type MPI_Win = *mut ompi_win_t;
-
-pub const IMPI_CLIENT_COLOR: c_uint = 13;
-pub const IMPI_CLIENT_SIZE: c_uint = 12;
-pub const IMPI_HOST_COLOR: c_uint = 15;
-pub const IMPI_HOST_SIZE: c_uint = 14;
-pub const MPI_APPNUM: c_uint = 4;
-pub const MPI_COMBINER_CONTIGUOUS: c_uint = 2;
-pub const MPI_COMBINER_DARRAY: c_uint = 13;
-pub const MPI_COMBINER_DUP: c_uint = 1;
-pub const MPI_COMBINER_F90_COMPLEX: c_uint = 15;
-pub const MPI_COMBINER_F90_INTEGER: c_uint = 16;
-pub const MPI_COMBINER_F90_REAL: c_uint = 14;
-pub const MPI_COMBINER_HINDEXED: c_uint = 8;
-pub const MPI_COMBINER_HINDEXED_BLOCK: c_uint = 18;
-pub const MPI_COMBINER_HINDEXED_INTEGER: c_uint = 7;
-pub const MPI_COMBINER_HVECTOR: c_uint = 5;
-pub const MPI_COMBINER_HVECTOR_INTEGER: c_uint = 4;
-pub const MPI_COMBINER_INDEXED: c_uint = 6;
-pub const MPI_COMBINER_INDEXED_BLOCK: c_uint = 9;
-pub const MPI_COMBINER_NAMED: c_uint = 0;
-pub const MPI_COMBINER_RESIZED: c_uint = 17;
-pub const MPI_COMBINER_STRUCT: c_uint = 11;
-pub const MPI_COMBINER_STRUCT_INTEGER: c_uint = 10;
-pub const MPI_COMBINER_SUBARRAY: c_uint = 12;
-pub const MPI_COMBINER_VECTOR: c_uint = 3;
-pub const MPI_COMM_TYPE_SHARED: c_uint = 0;
-pub const MPI_CONGRUENT: c_uint = 1;
-pub const MPI_HOST: c_uint = 1;
-pub const MPI_IDENT: c_uint = 0;
-pub const MPI_IO: c_uint = 2;
-pub const MPI_LASTUSEDCODE: c_uint = 5;
-pub const MPI_SIMILAR: c_uint = 2;
-pub const MPI_TAG_UB: c_uint = 0;
-pub const MPI_THREAD_FUNNELED: c_uint = 1;
-pub const MPI_THREAD_MULTIPLE: c_uint = 3;
-pub const MPI_THREAD_SERIALIZED: c_uint = 2;
-pub const MPI_THREAD_SINGLE: c_uint = 0;
-pub const MPI_T_BIND_MPI_COMM: c_uint = 1;
-pub const MPI_T_BIND_MPI_DATATYPE: c_uint = 2;
-pub const MPI_T_BIND_MPI_ERRHANDLER: c_uint = 3;
-pub const MPI_T_BIND_MPI_FILE: c_uint = 4;
-pub const MPI_T_BIND_MPI_GROUP: c_uint = 5;
-pub const MPI_T_BIND_MPI_INFO: c_uint = 10;
-pub const MPI_T_BIND_MPI_MESSAGE: c_uint = 9;
-pub const MPI_T_BIND_MPI_OP: c_uint = 6;
-pub const MPI_T_BIND_MPI_REQUEST: c_uint = 7;
-pub const MPI_T_BIND_MPI_WIN: c_uint = 8;
-pub const MPI_T_BIND_NO_OBJECT: c_uint = 0;
-pub const MPI_T_PVAR_CLASS_AGGREGATE: c_uint = 7;
-pub const MPI_T_PVAR_CLASS_COUNTER: c_uint = 6;
-pub const MPI_T_PVAR_CLASS_GENERIC: c_uint = 9;
-pub const MPI_T_PVAR_CLASS_HIGHWATERMARK: c_uint = 4;
-pub const MPI_T_PVAR_CLASS_LEVEL: c_uint = 1;
-pub const MPI_T_PVAR_CLASS_LOWWATERMARK: c_uint = 5;
-pub const MPI_T_PVAR_CLASS_PERCENTAGE: c_uint = 3;
-pub const MPI_T_PVAR_CLASS_SIZE: c_uint = 2;
-pub const MPI_T_PVAR_CLASS_STATE: c_uint = 0;
-pub const MPI_T_PVAR_CLASS_TIMER: c_uint = 8;
-pub const MPI_T_SCOPE_ALL: c_uint = 5;
-pub const MPI_T_SCOPE_ALL_EQ: c_uint = 6;
-pub const MPI_T_SCOPE_CONSTANT: c_uint = 0;
-pub const MPI_T_SCOPE_GROUP: c_uint = 3;
-pub const MPI_T_SCOPE_GROUP_EQ: c_uint = 4;
-pub const MPI_T_SCOPE_LOCAL: c_uint = 2;
-pub const MPI_T_SCOPE_READONLY: c_uint = 1;
-pub const MPI_T_VERBOSITY_MPIDEV_ALL: c_uint = 8;
-pub const MPI_T_VERBOSITY_MPIDEV_BASIC: c_uint = 6;
-pub const MPI_T_VERBOSITY_MPIDEV_DETAIL: c_uint = 7;
-pub const MPI_T_VERBOSITY_TUNER_ALL: c_uint = 5;
-pub const MPI_T_VERBOSITY_TUNER_BASIC: c_uint = 3;
-pub const MPI_T_VERBOSITY_TUNER_DETAIL: c_uint = 4;
-pub const MPI_T_VERBOSITY_USER_ALL: c_uint = 2;
-pub const MPI_T_VERBOSITY_USER_BASIC: c_uint = 0;
-pub const MPI_T_VERBOSITY_USER_DETAIL: c_uint = 1;
-pub const MPI_UNEQUAL: c_uint = 3;
-pub const MPI_UNIVERSE_SIZE: c_uint = 6;
-pub const MPI_WIN_BASE: c_uint = 7;
-pub const MPI_WIN_CREATE_FLAVOR: c_uint = 10;
-pub const MPI_WIN_DISP_UNIT: c_uint = 9;
-pub const MPI_WIN_MODEL: c_uint = 11;
-pub const MPI_WIN_SIZE: c_uint = 8;
-pub const MPI_WTIME_IS_GLOBAL: c_uint = 3;
 
 pub type MPI_Copy_function =
     extern "C" fn(arg1: MPI_Comm, arg2: c_int,
