@@ -2,7 +2,7 @@ use bindings::*;
 use error::{Error, MPI_SUCCESS};
 
 pub fn new() -> MPI_Comm {
-  unsafe { &mut ompi_communicator_t }
+  &mut ompi_communicator_t
 }
 
 pub fn world() -> MPI_Comm {
