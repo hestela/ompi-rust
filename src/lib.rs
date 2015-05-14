@@ -5,10 +5,10 @@ use libc::{ptrdiff_t, size_t, c_int, c_char};
 use libc::{c_longlong, c_void, c_uint, c_double};
 
 pub mod request;
-pub mod status;
 pub mod bindings;
 pub mod comm;
 pub mod error;
+pub mod status;
 
 use bindings::*;
 

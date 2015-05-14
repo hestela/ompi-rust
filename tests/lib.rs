@@ -3,6 +3,7 @@ extern crate mpi;
 pub use mpi::*;
 
 // Need to wrap call to init_null to prevent each thread from calling init.
+// TODO: consider thread multiple or make another set with thread multiple.
 fn sync_init() {
   use std::sync::{Once, ONCE_INIT};
   static INIT: Once = ONCE_INIT;
@@ -22,7 +23,7 @@ fn init() {
 
 #[cfg(test)]
 mod comm_tests {
-  use super::*;
+  use super::mpi::*;
 
   #[test]
   fn rank_in_world() {
@@ -54,6 +55,43 @@ mod comm_tests {
       Err(e) => panic!("got error: {}", e.string)
     }
   }
+}
 
+// Can't make tests for request unil MPI_Isend/Irecv are implemented
+#[cfg(test)]
+mod request_tests {
+  use super::mpi::*;
+  // TODO: tests like this require 2 ranks. Try spawning another thread?
+  #[test]
+  fn wait_on_message() {
+    super::sync_init();
+    let req = request::new();
+    // MPI_Isend/Irecv will make the req non-null.
+  }
 
+  #[test]
+  fn req_to_stat() {
+    super::sync_init();
+    let req = request::new();
+    // Make a request from Isend.
+    /*
+     * let stat = get_status(req).unwrap();
+     * let err = wait(req)
+     * match err {
+     *   Ok() => ,
+     *   Err(e) => panic!("Error from wait: {}", e.string)
+     * }
+     */
+  }
+}
+
+#[cfg(test)]
+mod error_tests {
+  use super::mpi::*;
+
+  #[test]
+  fn check_err_string() {
+    let err = error::Error::new(error::MPI_SUCCESS);
+    assert_eq!(err.string, "SUCCESS");
+  }
 }
