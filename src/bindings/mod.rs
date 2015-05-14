@@ -7,39 +7,66 @@ pub mod consts;
 use libc::{ptrdiff_t, size_t, c_int, c_char};
 use libc::{c_longlong, c_void, c_uint, c_double};
 
-pub enum Struct_mca_base_pvar_handle_t { }
-pub enum Struct_mca_base_pvar_session_t { }
-pub enum Struct_mca_base_var_enum_t { }
-pub enum Struct_ompi_communicator_t { }
-pub enum Struct_ompi_datatype_t { }
-pub enum Struct_ompi_errhandler_t { }
-pub enum Struct_ompi_file_t { }
-pub enum Struct_ompi_group_t { }
-pub enum Struct_ompi_info_t { }
-pub enum Struct_ompi_message_t { }
-pub enum Struct_ompi_mpit_cvar_handle_t { }
-pub enum Struct_ompi_op_t { }
-pub enum Struct_ompi_request_t { }
-pub enum Struct_ompi_win_t { }
+/* In C many MPI types are given to users as a pointer to an incomplete struct.
+ * We can do the same thing by making a pointer to a unit struct.
+ */
+#[repr(C)]
+pub struct ompi_communicator_t;
+#[repr(C)]
+pub struct ompi_group_t;
+#[repr(C)]
+pub struct mca_base_pvar_handle_t;
+#[repr(C)]
+pub struct mca_base_pvar_session_t;
+#[repr(C)]
+pub struct mca_base_var_enum_t;
+#[repr(C)]
+pub struct ompi_datatype_t;
+#[repr(C)]
+pub struct ompi_errhandler_t;
+#[repr(C)]
+pub struct ompi_file_t;
+#[repr(C)]
+pub struct ompi_info_t;
+#[repr(C)]
+pub struct ompi_message_t;
+#[repr(C)]
+pub struct ompi_mpit_cvar_handle_t;
+#[repr(C)]
+pub struct ompi_op_t;
+#[repr(C)]
+pub struct ompi_request_t;
+#[repr(C)]
+pub struct ompi_win_t;
+
+// One of the few structs that we require access to its members.
+#[repr(C)]
+pub struct ompi_status_public_t {
+    pub MPI_SOURCE: c_int,
+    pub MPI_TAG: c_int,
+    pub MPI_ERROR: c_int,
+    pub _cancelled: c_int,
+    pub _ucount: size_t,
+}
 
 pub type MPI_Aint = ptrdiff_t;
-pub type MPI_Comm = *mut Struct_ompi_communicator_t;
+pub type MPI_Comm = *mut ompi_communicator_t;
 pub type MPI_Count = c_longlong;
-pub type MPI_Datatype = *mut Struct_ompi_datatype_t;
-pub type MPI_Errhandler = *mut Struct_ompi_errhandler_t;
-pub type MPI_File = *mut Struct_ompi_file_t;
-pub type MPI_Group = *mut Struct_ompi_group_t;
-pub type MPI_Info = *mut Struct_ompi_info_t;
-pub type MPI_Message = *mut Struct_ompi_message_t;
+pub type MPI_Datatype = *mut ompi_datatype_t;
+pub type MPI_Errhandler = *mut ompi_errhandler_t;
+pub type MPI_File = *mut ompi_file_t;
+pub type MPI_Group = *mut ompi_group_t;
+pub type MPI_Info = *mut ompi_info_t;
+pub type MPI_Message = *mut ompi_message_t;
 pub type MPI_Offset = c_longlong;
-pub type MPI_Op = *mut Struct_ompi_op_t;
-pub type MPI_Request = *mut Struct_ompi_request_t;
-pub type MPI_Status = Struct_ompi_status_public_t;
-pub type MPI_T_cvar_handle = *mut Struct_ompi_mpit_cvar_handle_t;
-pub type MPI_T_enum = *mut Struct_mca_base_var_enum_t;
-pub type MPI_T_pvar_handle = *mut Struct_mca_base_pvar_handle_t;
-pub type MPI_T_pvar_session = *mut Struct_mca_base_pvar_session_t;
-pub type MPI_Win = *mut Struct_ompi_win_t;
+pub type MPI_Op = *mut ompi_op_t;
+pub type MPI_Request = *mut ompi_request_t;
+pub type MPI_Status = ompi_status_public_t;
+pub type MPI_T_cvar_handle = *mut ompi_mpit_cvar_handle_t;
+pub type MPI_T_enum = *mut mca_base_var_enum_t;
+pub type MPI_T_pvar_handle = *mut mca_base_pvar_handle_t;
+pub type MPI_T_pvar_session = *mut mca_base_pvar_session_t;
+pub type MPI_Win = *mut ompi_win_t;
 
 pub const IMPI_CLIENT_COLOR: c_uint = 13;
 pub const IMPI_CLIENT_SIZE: c_uint = 12;
@@ -123,27 +150,6 @@ pub const MPI_WIN_MODEL: c_uint = 11;
 pub const MPI_WIN_SIZE: c_uint = 8;
 pub const MPI_WTIME_IS_GLOBAL: c_uint = 3;
 
-#[repr(C)]
-#[derive(Copy)]
-pub struct Struct_ompi_status_public_t {
-    pub MPI_SOURCE: c_int,
-    pub MPI_TAG: c_int,
-    pub MPI_ERROR: c_int,
-    pub _cancelled: c_int,
-    pub _ucount: size_t,
-}
-
-impl ::std::clone::Clone for Struct_ompi_status_public_t {
-    fn clone(&self) -> Struct_ompi_status_public_t { *self }
-}
-
-impl ::std::default::Default for Struct_ompi_status_public_t {
-    fn default() -> Struct_ompi_status_public_t {
-        unsafe { ::std::mem::zeroed() }
-    }
-}
-
-pub type ompi_status_public_t = Struct_ompi_status_public_t;
 pub type MPI_Copy_function =
     extern "C" fn(arg1: MPI_Comm, arg2: c_int,
                   arg3: *mut c_void, arg4: *mut c_void,
@@ -218,120 +224,120 @@ extern "C" {
      * using those types requires uncomfortable typecasts in rust.
      * The predefined types just have padding with the normal type.
      * TODO: confirm this.
+     * TODO: cleanup types that will never be used.
      */
-    pub static mut ompi_communicator_t: Struct_ompi_communicator_t;
-    pub static mut ompi_mpi_comm_world: Struct_ompi_communicator_t;
-    pub static mut ompi_mpi_comm_self: Struct_ompi_communicator_t;
-    pub static mut ompi_mpi_comm_null: Struct_ompi_communicator_t;
-    pub static mut ompi_mpi_group_empty: Struct_ompi_group_t;
-    pub static mut ompi_mpi_group_null: Struct_ompi_group_t;
-    pub static mut ompi_request_null: Struct_ompi_request_t;
-    pub static mut ompi_message_null: Struct_ompi_message_t;
-    pub static mut ompi_message_no_proc: Struct_ompi_message_t;
-    pub static mut ompi_mpi_op_null: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_min: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_max: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_sum: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_prod: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_land: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_band: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_lor: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_bor: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_lxor: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_bxor: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_maxloc: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_minloc: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_replace: Struct_ompi_op_t;
-    pub static mut ompi_mpi_op_no_op: Struct_ompi_op_t;
-    pub static mut ompi_mpi_datatype_null: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_lb: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_ub: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_char: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_signed_char: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_unsigned_char: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_byte: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_short: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_unsigned_short: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_unsigned: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_long: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_unsigned_long: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_long_long_int: Struct_ompi_datatype_t;
+    pub static mut ompi_mpi_comm_world: ompi_communicator_t;
+    pub static mut ompi_mpi_comm_self: ompi_communicator_t;
+    pub static mut ompi_mpi_comm_null: ompi_communicator_t;
+    pub static mut ompi_mpi_group_empty: ompi_group_t;
+    pub static mut ompi_mpi_group_null: ompi_group_t;
+    pub static mut ompi_request_null: ompi_request_t;
+    pub static mut ompi_message_null: ompi_message_t;
+    pub static mut ompi_message_no_proc: ompi_message_t;
+    pub static mut ompi_mpi_op_null: ompi_op_t;
+    pub static mut ompi_mpi_op_min: ompi_op_t;
+    pub static mut ompi_mpi_op_max: ompi_op_t;
+    pub static mut ompi_mpi_op_sum: ompi_op_t;
+    pub static mut ompi_mpi_op_prod: ompi_op_t;
+    pub static mut ompi_mpi_op_land: ompi_op_t;
+    pub static mut ompi_mpi_op_band: ompi_op_t;
+    pub static mut ompi_mpi_op_lor: ompi_op_t;
+    pub static mut ompi_mpi_op_bor: ompi_op_t;
+    pub static mut ompi_mpi_op_lxor: ompi_op_t;
+    pub static mut ompi_mpi_op_bxor: ompi_op_t;
+    pub static mut ompi_mpi_op_maxloc: ompi_op_t;
+    pub static mut ompi_mpi_op_minloc: ompi_op_t;
+    pub static mut ompi_mpi_op_replace: ompi_op_t;
+    pub static mut ompi_mpi_op_no_op: ompi_op_t;
+    pub static mut ompi_mpi_datatype_null: ompi_datatype_t;
+    pub static mut ompi_mpi_lb: ompi_datatype_t;
+    pub static mut ompi_mpi_ub: ompi_datatype_t;
+    pub static mut ompi_mpi_char: ompi_datatype_t;
+    pub static mut ompi_mpi_signed_char: ompi_datatype_t;
+    pub static mut ompi_mpi_unsigned_char: ompi_datatype_t;
+    pub static mut ompi_mpi_byte: ompi_datatype_t;
+    pub static mut ompi_mpi_short: ompi_datatype_t;
+    pub static mut ompi_mpi_unsigned_short: ompi_datatype_t;
+    pub static mut ompi_mpi_int: ompi_datatype_t;
+    pub static mut ompi_mpi_unsigned: ompi_datatype_t;
+    pub static mut ompi_mpi_long: ompi_datatype_t;
+    pub static mut ompi_mpi_unsigned_long: ompi_datatype_t;
+    pub static mut ompi_mpi_long_long_int: ompi_datatype_t;
     pub static mut ompi_mpi_unsigned_long_long:
-               Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_float: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_double: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_long_double: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_wchar: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_packed: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_cxx_bool: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_cxx_cplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_cxx_dblcplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_cxx_ldblcplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_logical: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_character: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_integer: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_real: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_dblprec: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_cplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_dblcplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_ldblcplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_2int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_2integer: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_2real: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_2dblprec: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_2cplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_2dblcplex: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_float_int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_double_int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_longdbl_int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_short_int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_long_int: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_logical1: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_logical2: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_logical4: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_logical8: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_integer1: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_integer2: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_integer4: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_integer8: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_integer16: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_real2: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_real4: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_real8: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_real16: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_complex8: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_complex16: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_complex32: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_int8_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_uint8_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_int16_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_uint16_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_int32_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_uint32_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_int64_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_uint64_t: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_aint: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_offset: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_count: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_c_bool: Struct_ompi_datatype_t;
-    pub static mut ompi_mpi_c_complex: Struct_ompi_datatype_t;
+               ompi_datatype_t;
+    pub static mut ompi_mpi_float: ompi_datatype_t;
+    pub static mut ompi_mpi_double: ompi_datatype_t;
+    pub static mut ompi_mpi_long_double: ompi_datatype_t;
+    pub static mut ompi_mpi_wchar: ompi_datatype_t;
+    pub static mut ompi_mpi_packed: ompi_datatype_t;
+    pub static mut ompi_mpi_cxx_bool: ompi_datatype_t;
+    pub static mut ompi_mpi_cxx_cplex: ompi_datatype_t;
+    pub static mut ompi_mpi_cxx_dblcplex: ompi_datatype_t;
+    pub static mut ompi_mpi_cxx_ldblcplex: ompi_datatype_t;
+    pub static mut ompi_mpi_logical: ompi_datatype_t;
+    pub static mut ompi_mpi_character: ompi_datatype_t;
+    pub static mut ompi_mpi_integer: ompi_datatype_t;
+    pub static mut ompi_mpi_real: ompi_datatype_t;
+    pub static mut ompi_mpi_dblprec: ompi_datatype_t;
+    pub static mut ompi_mpi_cplex: ompi_datatype_t;
+    pub static mut ompi_mpi_dblcplex: ompi_datatype_t;
+    pub static mut ompi_mpi_ldblcplex: ompi_datatype_t;
+    pub static mut ompi_mpi_2int: ompi_datatype_t;
+    pub static mut ompi_mpi_2integer: ompi_datatype_t;
+    pub static mut ompi_mpi_2real: ompi_datatype_t;
+    pub static mut ompi_mpi_2dblprec: ompi_datatype_t;
+    pub static mut ompi_mpi_2cplex: ompi_datatype_t;
+    pub static mut ompi_mpi_2dblcplex: ompi_datatype_t;
+    pub static mut ompi_mpi_float_int: ompi_datatype_t;
+    pub static mut ompi_mpi_double_int: ompi_datatype_t;
+    pub static mut ompi_mpi_longdbl_int: ompi_datatype_t;
+    pub static mut ompi_mpi_short_int: ompi_datatype_t;
+    pub static mut ompi_mpi_long_int: ompi_datatype_t;
+    pub static mut ompi_mpi_logical1: ompi_datatype_t;
+    pub static mut ompi_mpi_logical2: ompi_datatype_t;
+    pub static mut ompi_mpi_logical4: ompi_datatype_t;
+    pub static mut ompi_mpi_logical8: ompi_datatype_t;
+    pub static mut ompi_mpi_integer1: ompi_datatype_t;
+    pub static mut ompi_mpi_integer2: ompi_datatype_t;
+    pub static mut ompi_mpi_integer4: ompi_datatype_t;
+    pub static mut ompi_mpi_integer8: ompi_datatype_t;
+    pub static mut ompi_mpi_integer16: ompi_datatype_t;
+    pub static mut ompi_mpi_real2: ompi_datatype_t;
+    pub static mut ompi_mpi_real4: ompi_datatype_t;
+    pub static mut ompi_mpi_real8: ompi_datatype_t;
+    pub static mut ompi_mpi_real16: ompi_datatype_t;
+    pub static mut ompi_mpi_complex8: ompi_datatype_t;
+    pub static mut ompi_mpi_complex16: ompi_datatype_t;
+    pub static mut ompi_mpi_complex32: ompi_datatype_t;
+    pub static mut ompi_mpi_int8_t: ompi_datatype_t;
+    pub static mut ompi_mpi_uint8_t: ompi_datatype_t;
+    pub static mut ompi_mpi_int16_t: ompi_datatype_t;
+    pub static mut ompi_mpi_uint16_t: ompi_datatype_t;
+    pub static mut ompi_mpi_int32_t: ompi_datatype_t;
+    pub static mut ompi_mpi_uint32_t: ompi_datatype_t;
+    pub static mut ompi_mpi_int64_t: ompi_datatype_t;
+    pub static mut ompi_mpi_uint64_t: ompi_datatype_t;
+    pub static mut ompi_mpi_aint: ompi_datatype_t;
+    pub static mut ompi_mpi_offset: ompi_datatype_t;
+    pub static mut ompi_mpi_count: ompi_datatype_t;
+    pub static mut ompi_mpi_c_bool: ompi_datatype_t;
+    pub static mut ompi_mpi_c_complex: ompi_datatype_t;
     pub static mut ompi_mpi_c_float_complex:
-               Struct_ompi_datatype_t;
+               ompi_datatype_t;
     pub static mut ompi_mpi_c_double_complex:
-               Struct_ompi_datatype_t;
+               ompi_datatype_t;
     pub static mut ompi_mpi_c_long_double_complex:
-               Struct_ompi_datatype_t;
+               ompi_datatype_t;
     pub static mut ompi_mpi_errhandler_null:
-               Struct_ompi_errhandler_t;
+               ompi_errhandler_t;
     pub static mut ompi_mpi_errors_are_fatal:
-               Struct_ompi_errhandler_t;
+               ompi_errhandler_t;
     pub static mut ompi_mpi_errors_return:
-               Struct_ompi_errhandler_t;
-    pub static mut ompi_mpi_win_null: Struct_ompi_win_t;
-    pub static mut ompi_mpi_file_null: Struct_ompi_file_t;
-    pub static mut ompi_mpi_info_null: Struct_ompi_info_t;
-    pub static mut ompi_mpi_info_env: Struct_ompi_info_t;
+               ompi_errhandler_t;
+    pub static mut ompi_mpi_win_null: ompi_win_t;
+    pub static mut ompi_mpi_file_null: ompi_file_t;
+    pub static mut ompi_mpi_info_null: ompi_info_t;
+    pub static mut ompi_mpi_info_env: ompi_info_t;
     pub static mut MPI_F_STATUS_IGNORE: *mut c_int;
     pub static mut MPI_F_STATUSES_IGNORE: *mut c_int;
 }
