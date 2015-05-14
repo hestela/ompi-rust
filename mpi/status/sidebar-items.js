@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["STATUS_IGNORE",""]],"fn":[["new","Creates new MPI_Status."]]});
