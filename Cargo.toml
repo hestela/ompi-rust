@@ -1,7 +1,7 @@
 [package]
 name = "mpi"
 version = "0.1.0"
-authors = ["henry"]
+authors = ["Henry Estela <henryestela@gmail.com>"]
 
 [lib]
 name = "mpi"
